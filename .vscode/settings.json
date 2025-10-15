@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  "rewrap.wrappingColumn": 90,
+  "typescript.preferences.importModuleSpecifierEnding": "js"
+}

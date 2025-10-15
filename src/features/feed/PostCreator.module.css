@@ -1,0 +1,57 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.field {
+  width: 100%;
+  min-height: 6rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.6);
+  color: #f5f5f5;
+  font: inherit;
+  resize: vertical;
+}
+
+.field:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.button {
+  align-self: flex-end;
+  padding: 0.6rem 1.5rem;
+  border-radius: 9999px;
+  border: none;
+  background: linear-gradient(135deg, #3f51ff, #9c27ff);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease;
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.6;
+  transform: none;
+}
+
+.button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.error {
+  margin: 0;
+  color: #ff7b7b;
+  font-size: 0.875rem;
+}
