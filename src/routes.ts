@@ -1,9 +1,10 @@
-import { routes } from './core/router.tsx'
+import { prefix, routes } from './core/router.tsx'
 
 export default routes({
   home: '/',
   feed: '/feed',
-  api: {
-    posts: '/api/posts',
-  },
+  api: prefix('/api', {
+    posts: '/posts',
+    post: '/posts/:id',
+  }),
 })

@@ -32,6 +32,9 @@ importers:
       srvx:
         specifier: ^0.8.16
         version: 0.8.16
+      type-fest:
+        specifier: ^5.1.0
+        version: 5.1.0
       vite:
         specifier: ^7.1.9
         version: 7.1.9(@types/node@24.7.2)
@@ -530,12 +533,20 @@ packages:
     engines: {node: '>=20.16.0'}
     hasBin: true
 
+  tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
+
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  type-fest@5.1.0:
+    resolution: {integrity: sha512-wQ531tuWvB6oK+pchHIu5lHe5f5wpSCqB8Kf4dWQRbOYc9HTge7JL0G4Qd44bh6QuJCccIzL3bugb8GI0MwHrg==}
+    engines: {node: '>=20'}
 
   undici-types@7.14.0:
     resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
@@ -976,12 +987,18 @@ snapshots:
 
   srvx@0.8.16: {}
 
+  tagged-tag@1.0.0: {}
+
   tinyglobby@0.2.15:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
   tslib@2.8.1: {}
+
+  type-fest@5.1.0:
+    dependencies:
+      tagged-tag: 1.0.0
 
   undici-types@7.14.0: {}
 
