@@ -1,0 +1,7 @@
+{
+  "name": "remix-headless",
+  "dependencies": {
+    "@remix-run/dom": "0.0.0-experimental-remix-jam.6",
+    "linkedom": "^0.18.12"
+  }
+}
