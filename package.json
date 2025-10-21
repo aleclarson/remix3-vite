@@ -2,8 +2,18 @@
   "name": "remix-headless",
   "type": "module",
   "exports": {
-    "import": "./src/remix.js",
-    "types": "./src/remix.d.ts"
+    ".": {
+      "import": "./src/remix.js",
+      "types": "./src/remix.d.ts"
+    },
+    "./jsx-runtime": {
+      "import": "./src/jsx-runtime.js",
+      "types": "./src/jsx-runtime.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./src/jsx-dev-runtime.js",
+      "types": "./src/jsx-dev-runtime.d.ts"
+    }
   },
   "dependencies": {
     "@remix-run/dom": "0.0.0-experimental-remix-jam.6",
@@ -15,9 +25,11 @@
   "devDependencies": {
     "@types/node": "^24.9.0",
     "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "esbuild": "^0.25.11",
     "magic-string": "^0.30.19",
     "radashi": "^12.7.0",
+    "react-dom": "^19.2.0",
     "tsx": "^4.20.6",
     "vitest": "^3.2.4"
   }

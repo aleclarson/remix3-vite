@@ -1,4 +1,4 @@
-import { parseHTML } from 'linkedom'; import { injectEventSupport, getEventListeners } from './events'; const { document, CustomEvent, Document, Element, Event, EventTarget, Text } = parseHTML('<html></html>'); injectEventSupport({ EventTarget }); export { document, CustomEvent, Document, Element, Event, EventTarget, Text, getEventListeners }; // node_modules/.pnpm/@remix-run+dom@0.0.0-experimental-remix-jam.6/node_modules/@remix-run/dom/dist/lib/component.js
+import { parseHTML } from 'linkedom'; import { injectEventSupport, getEventListeners } from './events'; import { injectElementSpy } from './element'; import { renderComponentHook } from './component'; const { document, CustomEvent, Document, Element, Event, EventTarget, Node, Text } = parseHTML('<html></html>'); injectEventSupport({ EventTarget }); injectElementSpy({ Element, Node }); export { document, CustomEvent, Document, Element, Event, EventTarget, Node, Text, createElement, getEventListeners, getAttributes, clearAttributes }; // node_modules/.pnpm/@remix-run+dom@0.0.0-experimental-remix-jam.6/node_modules/@remix-run/dom/dist/lib/component.js
 function createElement(type, props, ...children) {
   if (children.length > 0) {
     props.children = children;
@@ -1257,6 +1257,7 @@ function renderComponent(handle, currContent, next, domParent, frame, scheduler,
     scheduler.enqueue(committed, domParent, anchor);
   });
   scheduler.enqueueTasks(tasks);
+  renderComponentHook(handle, currContent, next, domParent, frame, scheduler, vParent, anchor, cursor);
 }
 function diffComponent(curr, next, frame, scheduler, domParent, vParent, anchor, cursor) {
   if (curr === null) {

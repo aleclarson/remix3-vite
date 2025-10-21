@@ -38,7 +38,6 @@ export function injectEventSupport({
         listener,
         typeof options === 'boolean' ? { capture: options } : options || {},
       )
-      console.log('Adding "%s" listener to', type, (this as Element).outerHTML)
     }
 
     return addEventListener.call(this, type, listener, options)
