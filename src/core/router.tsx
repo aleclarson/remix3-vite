@@ -14,50 +14,46 @@ type RootComponent<
   props: SetupProps,
 ) => Remix.RemixElement | ((props: UpdateProps) => Remix.RemixElement)
 
-type RouteFactory<TRoutes extends ParsedRouteMap = {}> = {
+type RouteFactory<TRoutes extends RoutePatternMap = {}> = {
   <TPattern extends string>(
-    path: RoutePattern<TPattern>,
-    handler: RouteHandler<TPattern>,
-  ): Promiseable<Response | null>
-
-  <TPattern extends string>(
-    pattern: TPattern,
-    handler: RouteHandler<TPattern>,
+    path: TPattern | RoutePattern<TPattern>,
+    handler: RouteHandler<RouteMatch<TPattern>>,
   ): Promiseable<Response | null>
 } & {
   [K in keyof TRoutes]: TRoutes[K] extends infer R
-    ? R extends ParsedRouteMap
-      ? RouteFactory<R>
-      : R extends RoutePattern<infer TPattern>
-        ? (handler: RouteHandler<TPattern>) => Promiseable<Response | null>
+    ? R extends RoutePattern<infer P>
+      ? RouteHandler<RouteMatch<P>> extends infer H
+        ? (handler: H) => Promiseable<Response | null>
+        : never
+      : R extends RoutePatternMap
+        ? RouteFactory<R>
         : never
     : never
 }
 
-type RouteHandler<TPattern extends string = string> = (
-  request: Request & RouteMatch<TPattern>,
-) => Promiseable<RouteResult<TPattern>>
+type RouteHandler<TMatch extends object = {}> = (
+  request: Request & TMatch,
+) => Promiseable<RouteResult<TMatch>>
 
-type RouteResult<TPattern extends string = string> =
-  | Response
+type RouteResult<TMatch extends object = {}> =
   | Remix.RemixElement
+  | Response
   | null
-  | {
-      default:
-        | RootComponent<SerializableProps & RouteMatch<TPattern>>
-        | {
-            fetch: (
-              request: Request & RouteMatch<TPattern>,
-            ) => Promiseable<Response | null>
-          }
+  | /* Remix component route. */ {
+      default: RootComponent<SerializableProps & TMatch>
     }
-  | {
+  | /* Classic API route. Any HTTP method. */ {
+      default: {
+        fetch: (request: Request & TMatch) => Promiseable<Response | null>
+      }
+    }
+  | /* Method-specific API routes. */ {
       [K in 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH']?: (
-        request: Request & RouteMatch<TPattern>,
+        request: Request & TMatch,
       ) => Promiseable<Response | null>
     }
 
-export function createRouter<TRoutes extends ParsedRouteMap>(
+export function createRouter<TRoutes extends RoutePatternMap>(
   routes: TRoutes,
   handler: (
     route: RouteFactory<TRoutes>,
@@ -81,7 +77,7 @@ export function createRouter<TRoutes extends ParsedRouteMap>(
   }
 }
 
-function createRouteFactory<TRoutes extends ParsedRouteMap>(
+function createRouteFactory<TRoutes extends RoutePatternMap>(
   routes: TRoutes,
   request: Request,
   resolveFrame: (src: string) => Promiseable<Remix.RemixElement>,
@@ -151,7 +147,7 @@ function createRouteFactory<TRoutes extends ParsedRouteMap>(
   return new Proxy(factory, {
     get(_, prop) {
       if (prop in routes) {
-        const route = routes[prop as never] as RoutePattern | ParsedRouteMap
+        const route = routes[prop as never] as RoutePattern | RoutePatternMap
         if (route instanceof RoutePattern) {
           return (handler: RouteHandler) => factory(route, handler)
         }
@@ -159,7 +155,7 @@ function createRouteFactory<TRoutes extends ParsedRouteMap>(
       }
       return routes[prop as never]
     },
-  }) as RouteFactory<ParsedRouteMap<TRoutes>>
+  }) as RouteFactory<RoutePatternMap<TRoutes>>
 }
 
 /**
@@ -210,26 +206,26 @@ export async function withLayout<T extends RootComponent>(
   }
 }
 
-type RouteMap = { [name: string]: string | RouteMap }
+type RouteSourceMap = { [name: string]: string | RouteSourceMap }
 
-type ParsedRouteMap<TRoutes extends RouteMap = RouteMap> = {
+type RoutePatternMap<TRoutes extends RouteSourceMap = RouteSourceMap> = {
   [K in keyof TRoutes]: TRoutes[K] extends string
     ? RoutePattern<TRoutes[K]>
-    : ParsedRouteMap<Extract<TRoutes[K], RouteMap>>
+    : RoutePatternMap<Extract<TRoutes[K], RouteSourceMap>>
 }
 
-type PrependRoutePattern<TPath extends string, TRoutes extends RouteMap> = {
+type Prefix<TPath extends string, TRoutes extends RouteSourceMap> = {} & {
   [K in keyof TRoutes]: TRoutes[K] extends string
     ? `${TPath}${TRoutes[K]}`
-    : PrependRoutePattern<TPath, Extract<TRoutes[K], RouteMap>>
+    : Prefix<TPath, Extract<TRoutes[K], RouteSourceMap>>
 }
 
 /**
  * Declare a map of named route patterns.
  */
-export function routes<const TRoutes extends RouteMap>(
+export function routes<const TRoutes extends RouteSourceMap>(
   routeMap: TRoutes,
-): ParsedRouteMap<TRoutes> {
+): RoutePatternMap<TRoutes> {
   return mapValues(routeMap, (routeValue) => {
     if (isString(routeValue)) {
       return new RoutePattern(prefix + routeValue)
@@ -238,10 +234,10 @@ export function routes<const TRoutes extends RouteMap>(
   }) as any
 }
 
-export function prefix<TPath extends string, const TRoutes extends RouteMap>(
-  path: TPath,
-  map: TRoutes,
-): PrependRoutePattern<TPath, TRoutes> {
+export function prefix<
+  TPath extends string,
+  const TRoutes extends RouteSourceMap,
+>(path: TPath, map: TRoutes): Prefix<TPath, TRoutes> {
   return mapValues(map, (routeValue) => {
     if (isString(routeValue)) {
       return new RoutePattern(path + routeValue)

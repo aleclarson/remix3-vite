@@ -1,0 +1,46 @@
+{
+  "type": "module",
+  "name": "@remix-run/dom",
+  "version": "0.0.0-experimental-remix-jam.6",
+  "description": "DOM rendering and JSX runtime for Remix UI",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/jsx-runtime.d.ts",
+      "default": "./dist/jsx-runtime.js"
+    },
+    "./jsx-dev-runtime": {
+      "types": "./dist/jsx-dev-runtime.d.ts",
+      "default": "./dist/jsx-dev-runtime.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    }
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "dependencies": {
+    "@remix-run/events": "0.0.0-experimental-remix-jam.5",
+    "@remix-run/style": "0.0.0-experimental-remix-jam.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.13",
+    "@vitest/browser": "^3.2.4",
+    "playwright": "^1.53.1",
+    "typescript": "^5.9.2",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.4"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "//postinstall": "playwright install chromium"
+  }
+}

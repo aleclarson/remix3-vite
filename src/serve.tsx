@@ -14,7 +14,7 @@ export default createRouter(routes, async function* (route, request) {
   const url = new URL(request.url)
   if (url.pathname.startsWith('/api/')) {
     yield route.api.posts(() => import('./api/posts.ts'))
-    yield route.api.post(() => import('./api/post.ts'))
+    yield route.api.post(({ params }) => import('./api/post.ts'))
   }
   yield new Response(null, { status: 404 })
 })
